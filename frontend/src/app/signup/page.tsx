@@ -2,31 +2,51 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { signupUser } from '../../utils/api'; // Import the signup function
 
 const Signup = () => {
-    const [username, setUsername] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const router = useRouter();
 
-    const handleSignup = (e: React.FormEvent) => {
+    const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Mock registration logic
-        console.log('User registered:', { username, password });
-        alert('Signup successful!');
-        router.push('/'); // Redirect to home or another page
+        try {
+            const response = await signupUser({ firstName, lastName, email, password });
+            alert(response.message); // Show success message
+            router.push('/'); // Redirect to home or another page
+        } catch (error: any) {
+            setError(error.response?.data?.message || 'Signup failed');
+        }
     };
 
     return (
-        <div className="flex items-center justify-center h-screen">
-            <form onSubmit={handleSignup} className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
-                <h2 className="text-2xl font-semibold text-center mb-4">Sign Up</h2>
+        <div className="flex items-center justify-center h-screen bg-gradient-to-r from-blue-500 to-purple-500">
+            <form onSubmit={handleSignup} className="max-w-md w-full p-8 bg-white rounded-lg shadow-lg">
+                <h2 className="text-3xl font-semibold text-center mb-6 text-blue-600">Create an Account</h2>
                 {error && <p className="text-red-500">{error}</p>}
                 <input
                     type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Username"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="First Name"
+                    className="border border-gray-300 p-3 mb-4 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <input
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Last Name"
+                    className="border border-gray-300 p-3 mb-4 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email"
                     className="border border-gray-300 p-3 mb-4 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <input
