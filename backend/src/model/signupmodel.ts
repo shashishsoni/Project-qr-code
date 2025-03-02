@@ -2,8 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 // Define the interface for the Signup model
 export interface ISignup extends Document {
-    firstName: string;
-    lastName: string;
+    username: string;
     email: string;
     password: string;
     signupDate: Date;
@@ -11,13 +10,10 @@ export interface ISignup extends Document {
 
 // Create the Signup schema
 const SignupSchema: Schema = new Schema({
-    firstName: {
+    username: {
         type: String,
         required: true,
-    },
-    lastName: {
-        type: String,
-        required: true,
+        unique: true, // Ensure username is unique
     },
     email: {
         type: String,

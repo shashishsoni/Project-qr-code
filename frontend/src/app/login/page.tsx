@@ -1,50 +1,118 @@
-// src/app/login.tsx    
 "use client";
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react";
+import { loginUser } from "../../utils/api";
+import { useUser } from "../../context/UserContext";
 
 const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+  const { login } = useUser();
 
-    const handleLogin = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Mock authentication logic        
-        if (username === 'user' && password === 'password') {
-            alert('Login successful!');
-            router.push('/');
-        } else {
-            setError('Invalid username or password');
-        }
-    };
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await loginUser({ email, password });
+      login(response.token);
+      console.log("Token stored:", response.token);
+      alert("Login successful!");
+      router.push("/");
+    } catch (error: any) {
+      setError(error.response?.data?.message || "Invalid email or password");
+    }
+  };
 
-    return (
-        <div className="flex items-center justify-center h-screen">
-            <form onSubmit={handleLogin} className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
-                <h2 className="text-2xl font-semibold text-center mb-4">Login</h2>
-                {error && <p className="text-red-500">{error}</p>}
-                <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Username"
-                    className="border border-gray-300 p-3 mb-4 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
-                    className="border border-gray-300 p-3 mb-4 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700 transition duration-200">
-                    Login
-                </button>
-            </form>
-        </div>
-    );
+  return (
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 transform transition-all duration-300 hover:shadow-2xl">
+        {/* Header */}
+        <h2 className="text-3xl font-bold text-gray-900 text-center mb-2">Welcome Back</h2>
+        <p className="text-center text-gray-500 mb-6">Sign in to your account</p>
+
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg mb-6">
+            <p className="text-red-600 text-sm">{error}</p>
+          </div>
+        )}
+
+        {/* Form */}
+        <form onSubmit={handleLogin} className="space-y-6">
+          {/* Email Field */}
+          <div className="space-y-2">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <div className="relative">
+              <MailIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
+              />
+            </div>
+          </div>
+
+          {/* Password Field */}
+          <div className="space-y-2">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <div className="relative">
+              <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                className="w-full pl-10 pr-12 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 h-8 w-8 flex items-center justify-center"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOffIcon className="h-5 w-5 text-gray-500 hover:text-gray-700" />
+                ) : (
+                  <EyeIcon className="h-5 w-5 text-gray-500 hover:text-gray-700" />
+                )}
+                <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg"
+          >
+            Sign In
+          </button>
+        </form>
+
+        {/* Signup Link */}
+        <p className="text-center mt-6 text-sm text-gray-600">
+          Don&apos;t have an account?{" "}
+          <Link href="/signup">
+            <span className="text-indigo-600 font-medium hover:underline cursor-pointer">
+              Sign Up
+            </span>
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
 };
 
 export default Login;

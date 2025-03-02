@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import authRoutes from './routes/authRoutes';
+import qrcodeRoutes from './routes/qrcodeRoutes'; // Import QR code routes
 import mongoose from 'mongoose';
 import { createClient } from 'redis';
 import dotenv from 'dotenv';
@@ -12,7 +13,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000', // Allow requests from your frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
+    credentials: true // Allow credentials if needed
+}));
 app.use(bodyParser.json());
 
 // Connect to MongoDB
@@ -37,6 +42,7 @@ redisClient.connect() // Connect the client
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/qrcode', qrcodeRoutes); // Use QR code routes
 
 // Start the server
 app.listen(PORT, () => {

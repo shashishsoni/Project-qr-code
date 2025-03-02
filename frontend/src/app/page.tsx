@@ -1,10 +1,10 @@
 // src/app/page.tsx
-import QRCodeGenerator from '../components/ORcodeGenerator';
+import  Homepage from '../components/Homepage';
 
 export default function Home() {
     return (
         <div>
-            <QRCodeGenerator />
+            <Homepage />
         </div>
     );
 }
