@@ -2,22 +2,19 @@ import nodemailer from 'nodemailer';
 
 export const sendResetEmail = async (email: string, resetUrl: string) => {
     try {
-        // Create a transporter using Mailtrap
+        // Create a transporter using basic SMTP configuration
         const transporter = nodemailer.createTransport({
-            host: 'smtp.mailtrap.io', // Mailtrap SMTP host
-            port: 587, // Mailtrap SMTP port
+            host: process.env.SMTP_SERVER,
+            port: Number(process.env.SMTP_PORT),
+            secure: false, // true for 465, false for other ports
             auth: {
-                user: process.env.MAILTRAP_USERNAME, // Mailtrap username
-                pass: process.env.MAILTRAP_PASSWORD // Mailtrap password
+                user: process.env.SMTP_USERNAME,
+                pass: process.env.SMTP_PASSWORD
             }
         });
 
-        // Verify transporter configuration
-        await transporter.verify();
-        console.log('SMTP connection verified successfully');
-
         const mailOptions = {
-            from: `"QR Code Generator" <${process.env.MAILTRAP_USERNAME}>`,
+            from: `"QR Code Generator" <${process.env.SMTP_USERNAME}>`,
             to: email,
             subject: 'Password Reset Request',
             html: `
@@ -37,15 +34,8 @@ export const sendResetEmail = async (email: string, resetUrl: string) => {
             `
         };
 
-        console.log('Attempting to send email with options:', {
-            from: mailOptions.from,
-            to: mailOptions.to,
-            subject: mailOptions.subject
-        });
-
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent successfully:', info.messageId);
-        return info;
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully');
     } catch (error) {
         console.error('Error in sendResetEmail:', error);
         throw new Error('Failed to send reset email. Please try again later.');
