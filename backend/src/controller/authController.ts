@@ -1,24 +1,28 @@
 import { Request, Response } from 'express';
-import Signup from '../model/signupmodel'; // Import the Signup model
-import { hashPassword, comparePasswords } from '../utils/utils'; // Import the hashPassword utility
-import jwt from 'jsonwebtoken'; // Import JWT
+import Signup from '../model/signupmodel'; // Ensure this path is correct
+import { hashPassword, comparePasswords } from '../utils/utils'; // Ensure this path is correct
+import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Use environment variable for secret
-
-// Mock database
-const users: { username: string; password: string }[] = [];
+// Use environment variable for JWT secret, with a fallback
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 // Register user
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
-    const { username, email, password } = req.body; // Get username, email, and password
+    const { username, email, password } = req.body;
+
+    if (!username || !email || !password) {
+        res.status(400).json({ message: 'Username, email, and password are required' });
+        return;
+    }
 
     try {
-        const hashedPassword = await hashPassword(password); // Hash the password
-        const newUser = new Signup({ username, email, password: hashedPassword }); // Create new user
-        await newUser.save(); 
+        const hashedPassword = await hashPassword(password);
+        const newUser = new Signup({ username, email, password: hashedPassword });
+        await newUser.save();
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error: any) {
-        res.status(400).json({ message: error.message });
+        console.error('Registration error:', error);
+        res.status(400).json({ message: error.message || 'Failed to register user' });
     }
 };
 
@@ -26,27 +30,33 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+        res.status(400).json({ message: 'Email and password are required' });
+        return;
+    }
+
     try {
-        const user = await Signup.findOne({ email }); // Find user by email
+        const user = await Signup.findOne({ email });
         if (!user) {
             res.status(401).json({ message: 'Invalid email or password' });
-            return; // Ensure to return after sending the response
+            return;
         }
 
-        const isPasswordValid = await comparePasswords(password, user.password); // Compare passwords
+        const isPasswordValid = await comparePasswords(password, user.password);
         if (!isPasswordValid) {
             res.status(401).json({ message: 'Invalid email or password' });
-            return; // Ensure to return after sending the response
+            return;
         }
 
-        // Generate JWT
-        const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ message: 'Login successful', token }); // Send token to client
+        const token = jwt.sign(
+            { id: user._id, username: user.username },
+            JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+        res.status(200).json({ message: 'Login successful', token });
     } catch (error: unknown) {
-        if (error instanceof Error) {
-            res.status(401).json({ message: error.message });
-        } else {
-            res.status(401).json({ message: 'An unknown error occurred' });
-        }
+        console.error('Login error:', error);
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        res.status(500).json({ message: errorMessage });
     }
-}; 
+};
