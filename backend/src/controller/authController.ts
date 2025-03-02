@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { registerUser as registerUserService, loginUser as loginUserService } from '../services/authService';
 import Signup from '../model/signupmodel'; // Import the Signup model
 import { hashPassword, comparePasswords } from '../utils/utils'; // Import the hashPassword utility
 import jwt from 'jsonwebtoken'; // Import JWT
@@ -16,7 +15,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
     try {
         const hashedPassword = await hashPassword(password); // Hash the password
         const newUser = new Signup({ username, email, password: hashedPassword }); // Create new user
-        await newUser.save(); // Save the user to the database
+        await newUser.save(); 
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error: any) {
         res.status(400).json({ message: error.message });
@@ -43,7 +42,11 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         // Generate JWT
         const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
         res.status(200).json({ message: 'Login successful', token }); // Send token to client
-    } catch (error: any) {
-        res.status(401).json({ message: error.message });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            res.status(401).json({ message: error.message });
+        } else {
+            res.status(401).json({ message: 'An unknown error occurred' });
+        }
     }
 }; 

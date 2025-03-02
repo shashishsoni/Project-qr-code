@@ -6,6 +6,7 @@ import qrcodeRoutes from './routes/qrcodeRoutes'; // Adjust the path as necessar
 import mongoose from 'mongoose';
 import { createClient } from 'redis';
 import dotenv from 'dotenv';
+import { Request, Response} from 'express';
 
 dotenv.config(); // Load environment variables
 
@@ -50,6 +51,6 @@ app.listen(PORT, () => {
 });
 
 // Root route
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
     res.send('Backend is running successfully!');
 });
