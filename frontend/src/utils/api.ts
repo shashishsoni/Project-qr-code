@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL, // Set your base URL here
+  baseURL: 'https://project-qr-code.onrender.com', // Make sure this is correct
   headers: {
     'Content-Type': 'application/json',
   },
