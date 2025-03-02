@@ -128,7 +128,7 @@ const ResetPasswordPage: React.FC = () => {
                             </div>
                             {message.includes('No account found') && (
                                 <p className="mt-2 text-sm">
-                                    Don't have an account?{" "}
+                                    Don&apos;t have an account?{" "}
                                     <Link href="/signup" className="text-indigo-600 hover:text-indigo-700 font-medium hover:underline">
                                         Sign up here
                                     </Link>
