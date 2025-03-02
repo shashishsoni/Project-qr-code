@@ -51,6 +51,6 @@ app.listen(PORT, () => {
 });
 
 // Root route
-app.get('/', (req: Request, res: Response) => {
+app.get('/backend', (req: Request, res: Response) => {
     res.send('Backend is running successfully!');
 });
