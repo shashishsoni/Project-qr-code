@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import api from '@/utils/api';
+import { AxiosError } from 'axios';
 
 const ResetPasswordPage: React.FC = () => {
     const [email, setEmail] = useState<string>('');
@@ -25,12 +26,12 @@ const ResetPasswordPage: React.FC = () => {
             } else {
                 setMessage(response.data.message || 'Failed to send reset instructions. Please try again.');
             }
-        } catch (error: any) {
+        } catch (error) {
             console.error('Reset password error:', error);
-            if (error.response) {
-                setMessage(error.response.data.message || 'Error requesting password reset. Please try again.');
-            } else if (error.request) {
-                setMessage('No response from server. Please check your connection and try again.');
+            if (error instanceof AxiosError) {
+                setMessage(error.response?.data?.message || 'Error requesting password reset. Please try again.');
+            } else if (error instanceof Error) {
+                setMessage(error.message);
             } else {
                 setMessage('Error setting up the request. Please try again.');
             }
