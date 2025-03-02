@@ -1,141 +1,202 @@
+# QR Code Generator API
 
-# Hiring Test for Full Stack Developer Intern
+## Overview
+The QR Code Generator API is a RESTful API built with Node.js and Express that allows users to register, log in, and reset their passwords. This API serves as the backend for a QR Code Generator application, providing essential user management functionalities.
 
-**NOTE:** You can use React or Next.js for the frontend and Node.js (or PHP) for the backend. Incorporating caching (e.g., Redis) is a plus. Deploy your project on any platform of your choice. Please provide both the live application URL and a link to your GitHub repository (which must be publicly accessible).
+## Table of Contents
+- [Technologies Used](#technologies-used)
+- [File Structure](#file-structure)
+- [API Endpoints](#api-endpoints)
+  - [User Registration](#1-user-registration)
+  - [User Login](#2-user-login)
+  - [Reset Password](#3-reset-password)
+  - [Update Password](#4-update-password)
+- [Environment Variables](#environment-variables)
+- [Usage](#usage)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
 
----
+## Technologies Used
+- **Node.js**: JavaScript runtime for building the server.
+- **Express**: Web framework for Node.js to handle routing and middleware.
+- **MongoDB**: NoSQL database for storing user data.
+- **Mongoose**: ODM (Object Data Modeling) library for MongoDB and Node.js.
+- **Nodemailer**: Module for sending emails.
+- **JSON Web Tokens (JWT)**: For secure user authentication.
+- **Bcrypt**: Library for hashing passwords.
+- **Axios**: Promise-based HTTP client for the frontend.
 
-## Objective
+## File Structure
 
-The objective of this test is to evaluate your ability to:
-- Build a full stack web application featuring user authentication (login, signup, and password reset).
-- Develop a QR Code Generator web app that lets users generate QR codes with customizable design options.
-- Implement a clean, modular, and well-documented codebase following industry best practices.
-- Demonstrate familiarity with version control (Git) using clear, atomic commit messages.
-- Optionally integrate caching to improve performance.
+    /project-root
+    │
+    ├── /backend
+    │ ├── /controller
+    │ │ └── authController.ts # Contains authentication logic
+    │ ├── /model
+    │ │ ├── signupmodel.ts # User model for registration
+    │ │ └── userreset.ts # User model for password reset
+    │ ├── /routes
+    │ │ └── authRoutes.ts # API routes for authentication
+    │ ├── /utils
+    │ │ ├── emailService.ts # Email sending logic
+    │ │ └── utils.ts # Utility functions (hashing, etc.)
+    │ ├── app.ts # Main application file
+    │ └── server.ts # Server setup and configuration
+    │
+    └── /frontend
+    ├── /app
+    │ ├── /reset-password
+    │ │ └── page.tsx # Reset password page component
+    │ └── /signup
+    │ └── page.tsx # Signup page component
+    └── utils
+    └── api.ts # API utility functions for making requests
 
----
 
-## Task Requirements
+## API Endpoints
 
-### 1. User Authentication
-- **Signup:** Allow users to create an account.
-- **Login:** Implement user login functionality.
-- **Password Reset:** Provide a mechanism for users to reset their password if forgotten.
-- **Security:** Secure all API endpoints using JWT, sessions, or another method of your choice.
+### 1. User Registration
+- **Endpoint**: `POST /api/auth/signup`
+- **Request Body**:
+    ```json
+    {
+        "username": "string",
+        "email": "string",
+        "password": "string"
+    }
+    ```
+- **Response**:
+    - **Success**:
+        ```json
+        {
+            "message": "User registered successfully"
+        }
+        ```
+    - **Error**:
+        ```json
+        {
+            "message": "Error message"
+        }
+        ```
 
-### 2. QR Code Generator
-- **Core Functionality:** Enable users to generate QR codes based on input data (e.g., URL or text).
-- **Customization:** Allow users to customize the QR code appearance (border style, color, etc.). You may use libraries such as `qrcode.react` or `qr-code-styling`.
-- **User Experience:** Ensure the interface is responsive and user-friendly.
+### 2. User Login
+- **Endpoint**: `POST /api/auth/login`
+- **Request Body**:
+    ```json
+    {
+        "email": "string",
+        "password": "string"
+    }
+    ```
+- **Response**:
+    - **Success**:
+        ```json
+        {
+            "message": "Login successful",
+            "token": "JWT_TOKEN"
+        }
+        ```
+    - **Error**:
+        ```json
+        {
+            "message": "Invalid email or password"
+        }
+        ```
 
-### 3. Tech Stack Guidelines
-- **Frontend:** Use React or Next.js.
-- **Backend:** Use Node.js (or PHP) to create RESTful APIs.
-- **Database:** Choose any database (e.g., MongoDB, PostgreSQL, MySQL) for storing user information and (optionally) QR code generation history.
-- **Authentication:** Utilize JWT or session-based authentication.
-- **QR Code Generation:** Integrate a suitable QR code generation library.
-- **Caching (Optional):** Use caching mechanisms (e.g., Redis) to enhance API performance.
+### 3. Reset Password
+- **Endpoint**: `POST /api/auth/reset-password`
+- **Request Body**:
+    ```json
+    {
+        "email": "string"
+    }
+    ```
+- **Response**:
+    - **Success**:
+        ```json
+        {
+            "success": true,
+            "message": "Password reset instructions sent to your email"
+        }
+        ```
+    - **Error**:
+        ```json
+        {
+            "success": false,
+            "message": "No account found with this email address"
+        }
+        ```
 
-### 4. API Development
-- Develop a REST API to handle:
-  - User registration, login, and password reset.
-  - QR code creation and (if applicable) management of past QR codes.
-- Validate all user inputs and handle errors gracefully.
-- Document your API endpoints clearly.
+### 4. Update Password
+- **Endpoint**: `POST /api/auth/update-password`
+- **Request Body**:
+    ```json
+    {
+        "token": "string",
+        "newPassword": "string"
+    }
+    ```
+- **Response**:
+    - **Success**:
+        ```json
+        {
+            "success": true,
+            "message": "Password has been reset successfully",
+            "token": "JWT_TOKEN"
+        }
+        ```
+    - **Error**:
+        ```json
+        {
+            "success": false,
+            "message": "Invalid or expired reset token"
+        }
+        ```
 
-### 5. Deployment
-- Deploy your application on any platform (e.g., Vercel, Netlify, Heroku, AWS).
-- Provide a working URL for the deployed application.
-- Ensure your GitHub repository link is shared and publicly accessible.
+## Environment Variables
+Make sure to set the following environment variables in your deployment environment:
+- `JWT_SECRET`: Secret key for JWT signing.
+- `SMTP_SERVER`: SMTP server for sending emails.
+- `SMTP_PORT`: Port for the SMTP server.
+- `SMTP_USERNAME`: Username for the SMTP server.
+- `SMTP_PASSWORD`: Password for the SMTP server.
+- `FRONTEND_URL`: URL of the frontend application.
 
-### 6. Git & Version Control
-- Use Git for version control.
-- Follow conventional commit messages, for example:
-  - `feat: Add user authentication endpoints`
-  - `fix: Correct password reset functionality`
-  - `docs: Update README with API usage examples`
-- Ensure commits are atomic and commit messages are clear.
+## Usage
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/shashishsoni/qr-code-generator-api.git
+   cd qr-code-generator-api
+   ```
+2. Navigate to the backend directory and install dependencies:
+   ```bash
+   cd backend
+   npm install
+   ```
+3. Set up your environment variables in a `.env` file or directly in your deployment environment.
+4. Start the server:
+   ```bash
+   npm start
+   ```
 
-### 7. Documentation
-- Write a detailed README (like this one) that includes:
-  - Installation and setup instructions.
-  - API usage examples.
-  - Deployment details.
-  - Contribution guidelines.
-- Ensure the documentation is well-structured and easy to follow.
+## Testing
+You can test the API endpoints using tools like Postman or curl. Make sure to replace the base URL with your deployed API URL.
 
----
+### Example Test with Postman
+- **Reset Password**:
+  - Method: `POST`
+  - URL: `https://your-api-url/api/auth/reset-password`
+  - Body:
+    ```json
+    {
+        "email": "user@example.com"
+    }
+    ```
 
-## Example API Usage
+## Contributing
+Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
 
-**User Registration:**
-```bash
-POST /api/auth/signup
-Content-Type: application/json
-
-{
-  "username": "your_username",
-  "email": "your_email@example.com",
-  "password": "your_password"
-}
-```
-
-**User Login:**
-```bash
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "email": "your_email@example.com",
-  "password": "your_password"
-}
-```
-
-**Password Reset:**
-```bash
-POST /api/auth/reset-password
-Content-Type: application/json
-
-{
-  "email": "your_email@example.com"
-}
-```
-
-**Generate QR Code:**
-```bash
-POST /api/qrcode
-Content-Type: application/json
-
-{
-  "data": "https://example.com",
-  "style": {
-    "border": "dotted",
-    "color": "#000000"
-  }
-}
-```
-
----
-
-## Evaluation Criteria
-
-You will be evaluated on the following:
-- **Code Quality:** Maintain clean, modular code following ES6 (or your framework's style guide) best practices.
-- **Functionality:** Ensure that API endpoints, user authentication, and QR code generation work as expected.
-- **Documentation:** Provide a comprehensive and clear README.
-- **Testing:** Include unit tests covering key functionalities.
-- **Deployment:** Successfully deploy the application and provide the working URL.
-- **Git Practices:** Use clear, conventional commit messages and maintain a well-organized repository.
-
----
-
-## Submission Instructions
-
-1. **Fork the Repository:** Fork the starter repository (if provided) and complete your solution.
-2. **Deployment:** Deploy your application and verify that it is accessible.
-3. **Repository Link:** Ensure your GitHub repository is public.
-4. **Issue/PR:** Open an issue or pull request in the repository with the appropriate tag (e.g., `full-stack`, `mern`, or `nextjs`).
-5. **Notification:** Tag @iamahmarfaraz in the issue/PR for review.
-6. **Documentation:** Include the link to your live deployment and GitHub repository in your submission.
-
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
