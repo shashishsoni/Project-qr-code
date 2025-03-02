@@ -6,8 +6,8 @@ export interface ISignup extends Document {
     email: string;
     password: string;
     signupDate: Date;
-    resetPasswordToken: string;
-    resetPasswordExpires: Date;
+    resetPasswordToken: string | null;
+    resetPasswordExpires: Date | null;
 }
 
 // Create the Signup schema

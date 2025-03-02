@@ -101,8 +101,8 @@ export const resetPassword = async (req: Request, res: Response) => {
         } catch (emailError) {
             console.error('Email sending error:', emailError);
             // If email fails, clear the reset token
-            user.resetPasswordToken = undefined;
-            user.resetPasswordExpires = undefined;
+            user.resetPasswordToken = null;
+            user.resetPasswordExpires = null;
             await user.save();
 
             res.status(500).json({
@@ -143,8 +143,8 @@ export const updatePassword = async (req: Request, res: Response) => {
 
         // Update password and clear reset token
         user.password = hashedPassword;
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpires = undefined;
+        user.resetPasswordToken = null;
+        user.resetPasswordExpires = null;
         await user.save();
 
         // Generate new JWT token
