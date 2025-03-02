@@ -2,23 +2,18 @@ import nodemailer from 'nodemailer';
 
 export const sendResetEmail = async (email: string, resetUrl: string) => {
     try {
-        // Create a transporter using Gmail
+        // Create a transporter using Mailtrap
         const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
-            secure: false, // true for 465, false for other ports like 587
+            host: 'smtp.mailtrap.io', // Mailtrap SMTP host
+            port: 587, // Mailtrap SMTP port
             auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASSWORD // This should be your Gmail App Password
+                user: process.env.MAILTRAP_USERNAME, // Mailtrap username
+                pass: process.env.MAILTRAP_PASSWORD // Mailtrap password
             }
         });
 
-        // Verify transporter configuration
-        await transporter.verify();
-        console.log('SMTP connection verified successfully');
-
         const mailOptions = {
-            from: `"QR Code Generator" <${process.env.EMAIL_USER}>`,
+            from: `"QR Code Generator" <${process.env.MAILTRAP_USERNAME}>`,
             to: email,
             subject: 'Password Reset Request',
             html: `
@@ -38,22 +33,11 @@ export const sendResetEmail = async (email: string, resetUrl: string) => {
             `
         };
 
-        console.log('Attempting to send email with options:', {
-            from: mailOptions.from,
-            to: mailOptions.to,
-            subject: mailOptions.subject
-        });
-
         const info = await transporter.sendMail(mailOptions);
         console.log('Email sent successfully:', info.messageId);
         return info;
     } catch (error) {
-        console.error('Detailed error in sendResetEmail:', {
-            message: error instanceof Error ? error.message : 'Unknown error',
-            stack: error instanceof Error ? error.stack : undefined,
-            code: (error as any).code,
-            command: (error as any).command
-        });
+        console.error('Error in sendResetEmail:', error);
         throw new Error('Failed to send reset email. Please try again later.');
     }
 };
