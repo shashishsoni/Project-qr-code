@@ -8,8 +8,8 @@
       "esModuleInterop": true,
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true,
-      "moduleResolution": "node",
-      "types": ["node", "express", "jsonwebtoken"]
+      "moduleResolution": "node"
+      // Remove "types": ["node", "express", "jsonwebtoken"] unless intentionally limiting scope
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
