@@ -1,43 +1,39 @@
-import mongoose, { Document, Schema } from 'mongoose';
+// models/qrcodeModel.ts
+import mongoose, { Document, Schema } from "mongoose";
 
-// Define the interface for the QR Code model
 export interface IQRCode extends Document {
-    userId: string; // Reference to the user who created the QR code
-    data: string; // The data encoded in the QR code
-    style: {
-        border: string;
-        color: string;
-    };
-    createdAt: Date;
+  data: string;
+  style: {
+    border: string;
+    color: string;
+  };
+  qrCodeDataUrl: string;
+  createdAt: Date;
+  background: string;
 }
 
-// Create the QR Code schema
 const QRCodeSchema: Schema = new Schema({
-    userId: {
-        type: String,
-        required: true,
-    },
-    data: {
-        type: String,
-        required: true,
-    },
-    style: {
-        border: {
-            type: String,
-            default: 'solid',
-        },
-        color: {
-            type: String,
-            default: '#000000',
-        },
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
+  data: {
+    type: String,
+    required: true,
+  },
+  style: {
+    border: { type: String, default: 'solid' },
+    color: { type: String, default: '#000000' },
+  },
+  qrCodeDataUrl: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  background: {
+    type: String,
+    required: true,
+  },
 });
 
-// Create the QR Code model
-const QRCode = mongoose.model<IQRCode>('QRCode', QRCodeSchema);
-
-export default QRCode; 
+const QRCodeModel = mongoose.model<IQRCode>("QRCode", QRCodeSchema);
+export default QRCodeModel;

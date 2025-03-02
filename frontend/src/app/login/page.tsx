@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react";
-import { loginUser } from "../../utils/api";
 import { useUser } from "../../context/UserContext";
+import api from "../../utils/api";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -15,12 +15,12 @@ const Login = () => {
   const router = useRouter();
   const { login } = useUser();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await loginUser({ email, password });
-      login(response.token);
-      console.log("Token stored:", response.token);
+      const response = await api.post("/api/auth/login", { email, password });
+      login(response.data.token);
+      console.log("Token stored:", response.data.token);
       alert("Login successful!");
       router.push("/");
     } catch (error: any) {
@@ -57,7 +57,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
+                className="text-black w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
               />
             </div>
           </div>
@@ -75,7 +75,7 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                className="w-full pl-10 pr-12 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
+                className="text-black w-full pl-10 pr-12 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
               />
               <button
                 type="button"

@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import authRoutes from './routes/authRoutes';
-import qrcodeRoutes from './routes/qrcodeRoutes'; // Import QR code routes
+import qrcodeRoutes from './routes/qrcodeRoutes'; // Adjust the path as necessary
 import mongoose from 'mongoose';
 import { createClient } from 'redis';
 import dotenv from 'dotenv';
@@ -42,7 +42,7 @@ redisClient.connect() // Connect the client
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/qrcode', qrcodeRoutes); // Use QR code routes
+app.use('/api/qrcode', qrcodeRoutes); // Ensure this matches the route defined in qrcodeRoutes.ts
 
 // Start the server
 app.listen(PORT, () => {

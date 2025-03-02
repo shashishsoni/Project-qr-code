@@ -4,13 +4,14 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { signupUser } from "../../utils/api";
-import { UserIcon, MailIcon, LockIcon } from "lucide-react"; // Added icons for better UX
+import { UserIcon, MailIcon, LockIcon, EyeIcon, EyeOffIcon } from "lucide-react"; 
 
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -47,55 +48,67 @@ const Signup = () => {
         <form onSubmit={handleSignup} className="space-y-6">
           {/* Username Field */}
           <div className="space-y-2">
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="username" className="block text-sm font-medium text-black">
               Username
             </label>
             <div className="relative">
-              <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-black" />
               <input
                 id="username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter your username"
-                className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
+                className="text-black w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
               />
             </div>
           </div>
 
           {/* Email Field */}
           <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="block text-sm font-medium text-black">
               Email
             </label>
             <div className="relative">
-              <MailIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <MailIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-black" />
               <input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
+                className="text-black  w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
               />
             </div>
           </div>
 
           {/* Password Field */}
           <div className="space-y-2">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="password" className="block text-sm font-medium text-black">
               Password
             </label>
             <div className="relative">
-              <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-black" />
               <input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
+                className="text-black w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
               />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 h-8 w-8 flex items-center justify-center"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOffIcon className="h-5 w-5 text-gray-500 hover:text-gray-700" />
+                ) : (
+                  <EyeIcon className="h-5 w-5 text-gray-500 hover:text-gray-700" />
+                )}
+                <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+              </button>
             </div>
           </div>
 

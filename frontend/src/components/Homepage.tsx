@@ -8,16 +8,22 @@ import "swiper/css"
 import "swiper/css/navigation"
 import "swiper/css/pagination"
 import "swiper/css/effect-fade"
+import axios from 'axios'
 
 const Homepage = () => {
   const [isPlaying, setIsPlaying] = useState(true)
+  const [data, setData] = useState('')
+  const [style, setStyle] = useState({})
+  const [qrColor, setQrColor] = useState('#000000') // Default QR color
+  const [background, setBackground] = useState('#ffffff') // Default background color
+  const [borderStyle, setBorderStyle] = useState('solid') // Default border style
+  const [borderRadius, setBorderRadius] = useState(0) // Default border radius
 
   const images = [
-    "/placeholder.svg?height=600&width=1200",
-    "/placeholder.svg?height=600&width=1200",
-    "/placeholder.svg?height=600&width=1200",
-    "/placeholder.svg?height=600&width=1200",
-  ] // Replace with your actual image paths
+    "/image.png",
+    "/image1.png",
+    "/image2.png",
+  ] 
 
   const toggleVideoPlay = () => {
     const video = document.getElementById("hero-video") as HTMLVideoElement
@@ -30,13 +36,25 @@ const Homepage = () => {
     }
   }
 
+  const handleGenerateQRCode = async () => {
+    try {
+      const response = await axios.post('/api/qrcode', { 
+        data, 
+        style 
+      });
+      console.log('QR Code generated:', response.data.qrCode);
+    } catch (error) {
+      console.error('Error generating QR Code:', error);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative h-screen overflow-hidden">
         <div className="absolute inset-0 bg-black/50 z-10"></div>
         <video id="hero-video" className="absolute inset-0 w-full h-full object-cover" autoPlay loop muted>
-          <source src="/path/to/your/video.mp4" type="video/mp4" />
+          <source src="https://res.cloudinary.com/dtbppvpta/video/upload/v1740921316/s6kr4wc1pvajueb4bg7e.mp4" type="video/mp4" />
         </video>
 
         <div className="relative z-20 container mx-auto px-4 h-full flex flex-col justify-center items-start">

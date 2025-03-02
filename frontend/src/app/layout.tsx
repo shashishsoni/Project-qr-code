@@ -9,16 +9,16 @@ interface LayoutProps {
     children: ReactNode;
 }
 
-export default function Layout({ children }: LayoutProps) {
-    return (
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
         <UserProvider>
-            <html lang="en">
-                <body>
-                    <Header />
-                    <main>{children}</main>
-                    <Footer />
-                </body>
-            </html>
+          <Header />
+          {children}
+          <Footer />
         </UserProvider>
-    );
+      </body>
+    </html>
+  );
 }
