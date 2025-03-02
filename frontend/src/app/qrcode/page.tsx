@@ -1,8 +1,9 @@
 "use client"
 import { useState, useEffect } from "react"
 import type React from "react"
+import Image from "next/image"
 
-import axios from "axios"
+import axios, { isAxiosError } from "axios"
 import { useUser } from "../../context/UserContext"
 import { Download, Copy, ExternalLink, Loader2 } from "lucide-react"
 import { toast } from "sonner"
@@ -166,9 +167,14 @@ const QRCodeGenerator = () => {
       }
 
       toast.success("QR code generated successfully!")
-    } catch (error: any) {
-      console.error("Error generating QR Code:", error.response?.data || error.message)
-      setError(error.response?.data?.message || "Failed to generate QR code")
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        console.error("Error generating QR Code:", error.response?.data || error.message)
+        setError(error.response?.data?.message || "Failed to generate QR code")
+      } else {
+        console.error("Unexpected error:", error)
+        setError("An unexpected error occurred")
+      }
       toast.error("Failed to generate QR code")
     } finally {
       setIsLoading(false)
@@ -420,7 +426,7 @@ const QRCodeGenerator = () => {
                         className="border border-gray-200 rounded-lg p-2 cursor-pointer hover:border-violet-300 transition-all"
                         onClick={() => loadRecentQRCode(url)}
                       >
-                        <img src={url || "/placeholder.svg"} alt={`Recent QR Code ${index + 1}`} className="w-full" />
+                        <Image src={url || "/placeholder.svg"} alt={`Recent QR Code ${index + 1}`} className="w-full" />
                       </div>
                     ))}
                   </div>
@@ -455,7 +461,7 @@ const QRCodeGenerator = () => {
                 maxHeight: `${size}px`,
               }}
             >
-              <img
+              <Image
                 src={qrCode || "/placeholder.svg"}
                 alt="Generated QR Code"
                 className="w-full h-full object-contain"

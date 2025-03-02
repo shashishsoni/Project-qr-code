@@ -25,8 +25,12 @@ const Signup = () => {
       await signupUser({ username, email, password });
       alert("Signup successful!");
       router.push("/login");
-    } catch (error: any) {
-      setError(error.response?.data?.message || "Signup failed");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     }
   };
 

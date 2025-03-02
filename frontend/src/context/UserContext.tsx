@@ -1,7 +1,7 @@
 "use client";
 
 // context/UserContext.tsx
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
 
 interface UserContextType {
   token: string | null;
@@ -21,14 +21,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setToken(newToken);
   };
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setToken(null);
     localStorage.removeItem("token");
     localStorage.removeItem("tokenExpiration");
-  };
+  }, []);
 
   // Check for token on initial load
-  const checkToken = () => {
+  const checkToken = useCallback(() => {
     const storedToken = localStorage.getItem("token");
     const storedExpiration = localStorage.getItem("tokenExpiration");
 
@@ -40,12 +40,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         logout(); // Token expired
       }
     }
-  };
+  }, [logout]);
 
   // Call checkToken on component mount
   useEffect(() => {
     checkToken();
-  }, []);
+  }, [checkToken]);
 
   return (
     <UserContext.Provider value={{ token, login, logout }}>

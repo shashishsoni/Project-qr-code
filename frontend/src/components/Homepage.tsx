@@ -1,5 +1,6 @@
 "use client"
 import { useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules"
@@ -8,16 +9,9 @@ import "swiper/css"
 import "swiper/css/navigation"
 import "swiper/css/pagination"
 import "swiper/css/effect-fade"
-import axios from 'axios'
 
 const Homepage = () => {
   const [isPlaying, setIsPlaying] = useState(true)
-  const [data, setData] = useState('')
-  const [style, setStyle] = useState({})
-  const [qrColor, setQrColor] = useState('#000000') // Default QR color
-  const [background, setBackground] = useState('#ffffff') // Default background color
-  const [borderStyle, setBorderStyle] = useState('solid') // Default border style
-  const [borderRadius, setBorderRadius] = useState(0) // Default border radius
 
   const images = [
     "/image.png",
@@ -36,17 +30,6 @@ const Homepage = () => {
     }
   }
 
-  const handleGenerateQRCode = async () => {
-    try {
-      const response = await axios.post('/api/qrcode', { 
-        data, 
-        style 
-      });
-      console.log('QR Code generated:', response.data.qrCode);
-    } catch (error) {
-      console.error('Error generating QR Code:', error);
-    }
-  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -156,7 +139,7 @@ const Homepage = () => {
               {images.map((image, index) => (
                 <SwiperSlide key={index}>
                   <div className="relative aspect-[16/9]">
-                    <img
+                    <Image
                       src={image || "/placeholder.svg"}
                       alt={`QR Code Example ${index + 1}`}
                       className="w-full h-full object-cover"
@@ -228,7 +211,7 @@ const Homepage = () => {
                     </svg>
                   ))}
                 </div>
-                <p className="text-gray-600 mb-6 italic">"{testimonial.quote}"</p>
+                <p className="text-gray-600 mb-6 italic">{testimonial.quote}</p>
                 <div>
                   <p className="font-bold">{testimonial.name}</p>
                   <p className="text-gray-500 text-sm">{testimonial.role}</p>

@@ -23,8 +23,12 @@ const Login = () => {
       console.log("Token stored:", response.data.token);
       alert("Login successful!");
       router.push("/");
-    } catch (error: any) {
-      setError(error.response?.data?.message || "Invalid email or password");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     }
   };
 
