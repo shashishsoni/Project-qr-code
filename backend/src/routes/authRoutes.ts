@@ -1,14 +1,13 @@
-import express, { Request, Response, RequestHandler } from 'express';
+import express, { RequestHandler } from 'express';
 import { registerUser, loginUser, resetPassword, updatePassword } from '../controller/authController';
-import { validateSignup, validateLogin } from '../middlewares/validationMiddleware';
 
 const router = express.Router();
 
 // Registration route
-router.post('/signup', validateSignup, registerUser);
+router.post('/signup', registerUser as RequestHandler);
 
 // Login route
-router.post('/login', validateLogin, loginUser);
+router.post('/login', loginUser as RequestHandler);
 
 // POST /api/auth/reset-password
 router.post('/reset-password', resetPassword as RequestHandler);

@@ -6,6 +6,8 @@ export interface ISignup extends Document {
     email: string;
     password: string;
     signupDate: Date;
+    resetPasswordToken: string;
+    resetPasswordExpires: Date;
 }
 
 // Create the Signup schema
@@ -28,6 +30,8 @@ const SignupSchema: Schema = new Schema({
         type: Date,
         default: Date.now, // Set default to current date and time
     },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date
 });
 
 // Create the Signup model

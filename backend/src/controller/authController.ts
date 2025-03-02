@@ -70,8 +70,8 @@ export const resetPassword = async (req: Request, res: Response) => {
     try {
         const { email } = req.body;
 
-        // Find user by email
-        const user = await User.findOne({ email });
+        // Find user by email in the Signup model instead of User model
+        const user = await Signup.findOne({ email });
         if (!user) {
             return res.status(404).json({
                 success: false,

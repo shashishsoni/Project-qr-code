@@ -15,10 +15,12 @@ const ResetPasswordPage: React.FC = () => {
         setMessage('');
 
         try {
+            console.log('Sending request to:', '/api/auth/reset-password');
             const response = await api.post('/api/auth/reset-password', {
-                email,
-                fromEmail: email
+                email
             });
+
+            console.log('Response:', response.data);
 
             if (response.data.success) {
                 setMessage('Password reset instructions have been sent to your email.');
