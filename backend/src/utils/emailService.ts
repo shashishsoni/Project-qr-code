@@ -12,6 +12,10 @@ export const sendResetEmail = async (email: string, resetUrl: string) => {
             }
         });
 
+        // Verify transporter configuration
+        await transporter.verify();
+        console.log('SMTP connection verified successfully');
+
         const mailOptions = {
             from: `"QR Code Generator" <${process.env.MAILTRAP_USERNAME}>`,
             to: email,
@@ -32,6 +36,12 @@ export const sendResetEmail = async (email: string, resetUrl: string) => {
                 </div>
             `
         };
+
+        console.log('Attempting to send email with options:', {
+            from: mailOptions.from,
+            to: mailOptions.to,
+            subject: mailOptions.subject
+        });
 
         const info = await transporter.sendMail(mailOptions);
         console.log('Email sent successfully:', info.messageId);
