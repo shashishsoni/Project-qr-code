@@ -48,3 +48,8 @@ app.use('/api/qrcode', qrcodeRoutes); // Ensure this matches the route defined i
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+// Root route
+app.get('/', (req, res) => {
+    res.send('Backend is running successfully!');
+});

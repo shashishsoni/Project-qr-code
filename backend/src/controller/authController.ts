@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { registerUser as registerUserService, loginUser as loginUserService } from '../services/authService';
-import Signup from '../model/signupModel'; // Import the Signup model
+import Signup from '../model/signupmodel'; // Import the Signup model
 import { hashPassword, comparePasswords } from '../utils/utils'; // Import the hashPassword utility
 import jwt from 'jsonwebtoken'; // Import JWT
 
