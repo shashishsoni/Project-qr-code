@@ -70,18 +70,20 @@ export const resetPassword = async (req: Request, res: Response) => {
     try {
         const { email } = req.body;
 
-        // Find user by email in the Signup model instead of User model
+        // Find user by email in the Signup model
         const user = await Signup.findOne({ email });
+        console.log('Found user:', user); // Add this log
+
         if (!user) {
             return res.status(404).json({
                 success: false,
-                message: 'User not found'
+                message: 'No account found with this email address'
             });
         }
 
         // Generate reset token
         const resetToken = crypto.randomBytes(32).toString('hex');
-        const resetTokenExpiry = new Date(Date.now() + 3600000); // Convert to Date object
+        const resetTokenExpiry = new Date(Date.now() + 3600000);
 
         // Save reset token to user
         user.resetPasswordToken = resetToken;
@@ -100,7 +102,6 @@ export const resetPassword = async (req: Request, res: Response) => {
             });
         } catch (emailError) {
             console.error('Email sending error:', emailError);
-            // If email fails, clear the reset token
             user.resetPasswordToken = null;
             user.resetPasswordExpires = null;
             await user.save();
