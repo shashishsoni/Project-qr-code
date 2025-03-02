@@ -36,8 +36,12 @@ const Login = () => {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 transform transition-all duration-300 hover:shadow-2xl">
         {/* Header */}
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-2">Welcome Back</h2>
-        <p className="text-center text-gray-500 mb-6">Sign in to your account</p>
+        <h2 className="text-3xl font-bold text-gray-900 text-center mb-2">
+          Welcome Back
+        </h2>
+        <p className="text-center text-gray-500 mb-6">
+          Sign in to your account
+        </p>
 
         {/* Error Message */}
         {error && (
@@ -50,7 +54,10 @@ const Login = () => {
         <form onSubmit={handleLogin} className="space-y-6">
           {/* Email Field */}
           <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email
             </label>
             <div className="relative">
@@ -68,7 +75,10 @@ const Login = () => {
 
           {/* Password Field */}
           <div className="space-y-2">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <div className="relative">
@@ -91,7 +101,9 @@ const Login = () => {
                 ) : (
                   <EyeIcon className="h-5 w-5 text-gray-500 hover:text-gray-700" />
                 )}
-                <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+                <span className="sr-only">
+                  {showPassword ? "Hide password" : "Show password"}
+                </span>
               </button>
             </div>
           </div>
@@ -104,6 +116,15 @@ const Login = () => {
             Sign In
           </button>
         </form>
+
+        {/* Link to Reset Password Page */}
+        <p className="text-center mt-4 text-sm text-gray-600">
+          <Link href="/reset-password">
+            <span className="text-indigo-600 hover:underline cursor-pointer">
+              Forgot your password?
+            </span>
+          </Link>
+        </p>
 
         {/* Signup Link */}
         <p className="text-center mt-6 text-sm text-gray-600">

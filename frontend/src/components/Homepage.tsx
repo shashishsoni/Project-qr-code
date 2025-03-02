@@ -139,8 +139,10 @@ const Homepage = () => {
               {images.map((image, index) => (
                 <SwiperSlide key={index}>
                   <div className="relative aspect-[16/9]">
-                    <Image
+                    <Image  
                       src={image || "/placeholder.svg"}
+                      width={1000}
+                      height={1000}
                       alt={`QR Code Example ${index + 1}`}
                       className="w-full h-full object-cover"
                     />

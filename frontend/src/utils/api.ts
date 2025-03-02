@@ -22,3 +22,14 @@ export const loginUser = async (userData: { email: string; password: string }) =
     const response = await api.post(`${API_URL}/login`, userData);
     return response.data;
 };
+
+export const resetPassword = async (email: string) => {
+    const response = await api.post(`${API_URL}/reset-password`, { email });
+    return response.data;
+};
+
+export const updatePassword = async (token: string, newPassword: string) => {
+    const response = await api.post(`${API_URL}/update-password`, { token, newPassword });
+    return response.data;
+};
+
