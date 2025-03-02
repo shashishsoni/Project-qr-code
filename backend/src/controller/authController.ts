@@ -71,6 +71,13 @@ export const resetPassword = async (req: Request, res: Response) => {
         const { email } = req.body;
         console.log('Reset password request received for email:', email);
 
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email is required'
+            });
+        }
+
         // Find user by email in the Signup model
         const user = await Signup.findOne({ email });
         console.log('Found user:', user ? 'User exists' : 'User not found');
@@ -96,7 +103,10 @@ export const resetPassword = async (req: Request, res: Response) => {
             console.log('Reset token saved to user');
         } catch (saveError) {
             console.error('Error saving reset token:', saveError);
-            throw saveError;
+            return res.status(500).json({
+                success: false,
+                message: 'Error saving reset token. Please try again.'
+            });
         }
 
         // Create reset URL
@@ -119,9 +129,18 @@ export const resetPassword = async (req: Request, res: Response) => {
             user.resetPasswordExpires = null;
             await user.save();
 
-            res.status(500).json({
+            // Check for specific email errors
+            const errorMessage = emailError instanceof Error ? emailError.message : 'Unknown error';
+            if (errorMessage.includes('Invalid login')) {
+                return res.status(500).json({
+                    success: false,
+                    message: 'Email service configuration error. Please contact support.'
+                });
+            }
+
+            return res.status(500).json({
                 success: false,
-                message: 'Error sending reset email. Please try again.'
+                message: 'Error sending reset email. Please try again later.'
             });
         }
     } catch (error) {
