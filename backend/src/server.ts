@@ -11,7 +11,7 @@ import { Request, Response} from 'express';
 dotenv.config(); // Load environment variables
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 // Middleware
 app.use(cors({
@@ -51,6 +51,6 @@ app.listen(PORT, () => {
 });
 
 // Root route
-app.get('/backend', (req: Request, res: Response) => {
+app.get('/', (req: Request, res: Response) => {
     res.send('Backend is running successfully!');
 });
