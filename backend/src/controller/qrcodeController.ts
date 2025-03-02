@@ -42,7 +42,7 @@ export const generateQRCode = async (req: Request, res: Response) => {
 };
 
 export const getUserQRCodes = async (req: Request, res: Response): Promise<void> => {
-    const userId = req.user?.id; // Get user ID from the token, safely
+    const userId = (req as any).user?.id;
 
     if (!userId) {
         res.status(401).json({ message: 'Unauthorized: User ID is missing' });
