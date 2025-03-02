@@ -69,12 +69,14 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 export const resetPassword = async (req: Request, res: Response) => {
     try {
         const { email } = req.body;
+        console.log('Reset password request received for email:', email);
 
         // Find user by email in the Signup model
         const user = await Signup.findOne({ email });
-        console.log('Found user:', user); // Add this log
+        console.log('Found user:', user ? 'User exists' : 'User not found');
 
         if (!user) {
+            console.log('No user found with email:', email);
             return res.status(404).json({
                 success: false,
                 message: 'No account found with this email address'
@@ -84,24 +86,35 @@ export const resetPassword = async (req: Request, res: Response) => {
         // Generate reset token
         const resetToken = crypto.randomBytes(32).toString('hex');
         const resetTokenExpiry = new Date(Date.now() + 3600000);
+        console.log('Generated reset token and expiry');
 
         // Save reset token to user
-        user.resetPasswordToken = resetToken;
-        user.resetPasswordExpires = resetTokenExpiry;
-        await user.save();
+        try {
+            user.resetPasswordToken = resetToken;
+            user.resetPasswordExpires = resetTokenExpiry;
+            await user.save();
+            console.log('Reset token saved to user');
+        } catch (saveError) {
+            console.error('Error saving reset token:', saveError);
+            throw saveError;
+        }
 
         // Create reset URL
         const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+        console.log('Reset URL created:', resetUrl);
 
         // Send reset email
         try {
+            console.log('Attempting to send reset email to:', user.email);
             await sendResetEmail(user.email, resetUrl);
+            console.log('Reset email sent successfully');
             res.status(200).json({
                 success: true,
                 message: 'Password reset instructions sent to your email'
             });
         } catch (emailError) {
             console.error('Email sending error:', emailError);
+            // If email fails, clear the reset token
             user.resetPasswordToken = null;
             user.resetPasswordExpires = null;
             await user.save();
