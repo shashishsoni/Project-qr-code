@@ -13,6 +13,10 @@ export const sendResetEmail = async (email: string, resetUrl: string) => {
             }
         });
 
+        // Verify transporter configuration
+        await transporter.verify();
+        console.log('SMTP connection verified successfully');
+
         const mailOptions = {
             from: `"QR Code Generator" <${process.env.SMTP_USERNAME}>`,
             to: email,
@@ -34,10 +38,26 @@ export const sendResetEmail = async (email: string, resetUrl: string) => {
             `
         };
 
-        await transporter.sendMail(mailOptions);
-        console.log('Email sent successfully');
+        console.log('Attempting to send email with options:', {
+            from: mailOptions.from,
+            to: mailOptions.to,
+            subject: mailOptions.subject
+        });
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully:', info.messageId);
+        return info;
     } catch (error) {
-        console.error('Error in sendResetEmail:', error);
+        if (error instanceof Error) {
+            console.error('Error in sendResetEmail:', {
+                message: error.message,
+                stack: error.stack,
+            });
+        } else {
+            console.error('Error in sendResetEmail:', {
+                message: 'An unknown error occurred',
+            });
+        }
         throw new Error('Failed to send reset email. Please try again later.');
     }
 };
