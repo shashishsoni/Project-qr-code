@@ -11,25 +11,23 @@ const api = axios.create({
 
 export default api;
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL + '/api/auth';
-
 export const signupUser = async (userData: { username: string; email: string; password: string }) => {
-    const response = await api.post(`${API_URL}/signup`, userData);
+    const response = await api.post('/api/auth/signup', userData);
     return response.data;
 };
 
 export const loginUser = async (userData: { email: string; password: string }) => {
-    const response = await api.post(`${API_URL}/login`, userData);
+    const response = await api.post('/api/auth/login', userData);
     return response.data;
 };
 
 export const resetPassword = async (email: string) => {
-    const response = await api.post(`${API_URL}/reset-password`, { email });
+    const response = await api.post('/api/auth/reset-password', { email });
     return response.data;
 };
 
 export const updatePassword = async (token: string, newPassword: string) => {
-    const response = await api.post(`${API_URL}/update-password`, { token, newPassword });
+    const response = await api.post('/api/auth/update-password', { token, newPassword });
     return response.data;
 };
 

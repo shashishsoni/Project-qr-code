@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 import Link from 'next/link';
-import api from '@/utils/api';
+import { resetPassword } from '@/utils/api';
 import { AxiosError } from 'axios';
 
 const ResetPasswordPage: React.FC = () => {
@@ -15,17 +15,14 @@ const ResetPasswordPage: React.FC = () => {
         setMessage('');
 
         try {
-            const response = await api.post('/auth/reset-password', {
-                email
-            });
+            const response = await resetPassword(email);
+            console.log('Response:', response);
 
-            console.log('Response:', response.data);
-
-            if (response.data.success) {
+            if (response.success) {
                 setMessage('Password reset instructions have been sent to your email.');
                 setEmail('');
             } else {
-                setMessage(response.data.message || 'Failed to send reset instructions. Please try again.');
+                setMessage(response.message || 'Failed to send reset instructions. Please try again.');
             }
         } catch (error) {
             console.error('Reset password error:', error);
