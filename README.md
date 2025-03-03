@@ -55,6 +55,82 @@ The QR Code Generator API is a RESTful API built with Node.js and Express that a
     └── api.ts # API utility functions for making requests
 
 
+## Docker Installation and Usage
+
+This project can be easily set up and run using Docker and Docker Compose. Follow the steps below to get started.
+
+### Prerequisites
+
+Make sure you have the following installed on your machine:
+
+- [Docker](https://www.docker.com/get-started) (version 20.10 or higher)
+- [Docker Compose](https://docs.docker.com/compose/install/) (included with Docker Desktop)
+
+### Step 1: Clone the Repository
+
+Clone the repository to your local machine:
+
+```bash
+git clone https://github.com/shashishsoni/qr-code-generator-api.git
+cd qr-code-generator-api
+```
+
+### Step 2: Configure Environment Variables
+
+Before running the application, you need to set up the environment variables. Create a `.env` file in the root of your project directory and add the following variables:
+
+```plaintext
+JWT_SECRET=your_jwt_secret
+SMTP_SERVER=your_smtp_server
+SMTP_PORT=your_smtp_port
+SMTP_USERNAME=your_smtp_username
+SMTP_PASSWORD=your_smtp_password
+FRONTEND_URL=http://localhost:3000
+MONGODB_URI=your_mongodb_connection_string
+```
+
+Make sure to replace the placeholder values with your actual configuration.
+
+### Step 3: Build and Run the Application
+
+To build and run both the backend and frontend services, use the following command:
+
+```bash
+docker-compose up --build
+```
+
+This command will:
+
+- Build the Docker images for both the backend and frontend services.
+- Start the containers and map the necessary ports.
+
+### Step 4: Access the Application
+
+Once the containers are running, you can access the application at the following URLs:
+
+- **Backend API**: [http://localhost:5000](http://localhost:5000)
+- **Frontend Application**: [http://localhost:3000](http://localhost:3000)
+
+### Step 5: Stopping the Application
+
+To stop the running containers, you can use:
+
+```bash
+docker-compose down
+```
+
+This command will stop and remove the containers, but your data will persist if you are using a remote MongoDB instance.
+
+### Additional Notes
+
+- If you encounter any issues during the build process, ensure that your Dockerfile and docker-compose.yml files are correctly configured.
+- For development purposes, you can modify the code in the `backend` and `frontend` directories, and the changes will be reflected in the running containers due to the volume mounts specified in the `docker-compose.yml` file.
+
+### Conclusion
+
+Using Docker and Docker Compose simplifies the setup and deployment of the QR Code Generator application. If you have any questions or issues, feel free to open an issue in the repository.
+
+
 ## API Endpoints
 
 ### 1. User Registration
@@ -194,9 +270,3 @@ You can test the API endpoints using tools like Postman or curl. Make sure to re
         "email": "user@example.com"
     }
     ```
-
-## Contributing
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
-
-## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

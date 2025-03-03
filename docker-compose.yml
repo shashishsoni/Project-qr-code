@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"  # Map port 5000 on the host to port 5000 in the container
+    environment:
+      JWT_SECRET: 7ff16ee6095dff38020060eb11e8bb1745d4710a69291c37c75efee7dd598a583a81d68fc87e88717c62b9860c3715515b3bc938ffa4a61f83e1a52c0c0d6b1781000f146e97e14a8a6711dbf82f830755b2ffc880b848450a9c1f807b64b5f9fc8442d45f2f5f65e11d7523792b0ca15daf3f60789e978530c130281203b530d01e66834c2fcb12973c0952e258fcfa0c13971c41e9fcb9ebff9b9843dd6359c30aa39d9ea5c1dd2c39ff27e035d5832e268633e0ae80e78ec8450d8eb1e9f2bc2424a554d9d1420ff0b0891fb63fb02b9b5760a7ebeceb9902bd4c9dc819548ecd29f8a08b48be3068bd0731789ea4e5e9775415d1f0825d437802165ae29e
+      SMTP_SERVER: mail.smtp2go.com
+      SMTP_PORT: 2525
+      SMTP_USERNAME: shashish2021@vitbhopal.ac.in
+      SMTP_PASSWORD: F1wvVYdiK1Bc6Dbd
+      FRONTEND_URL: http://localhost:3000
+      NODE_ENV: development
+      MONGO_URI: mongodb+srv://shashish2021:7ff16ee6095dff38020060eb@cluster0.zqzqy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0 # Ensure MongoDB starts before the API
+    volumes:
+      - ./backend:/usr/src/app 
+      - /usr/src/app/node_modules 
+      
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  # Map port 3000 on the host to port 3000 in the container
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+      - NODE_ENV=development
+    depends_on:
+      - api  # Ensure the API starts before the frontend
+    volumes:
+      - ./frontend:/usr/src/app  # Mount the frontend directory for live updates
+
